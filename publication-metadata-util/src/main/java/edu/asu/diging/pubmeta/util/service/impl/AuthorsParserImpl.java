@@ -86,8 +86,8 @@ public class AuthorsParserImpl implements AuthorsParser {
         Person person = new PersonImpl();
         String[] nameParts = author.split(", ");
         if (nameParts.length > 1) {
-            person.setLastName(nameParts[0]);
-            person.setFirstName(nameParts[1]);
+            person.setLastName(nameParts[0].trim());
+            person.setFirstName(nameParts[1].trim());
             /*
              * The following really doesn't seem to make sense as it would
              * mean the name would be something like Bauer, Peter, Franz but
@@ -96,12 +96,12 @@ public class AuthorsParserImpl implements AuthorsParser {
             if (nameParts.length > 2) {
                 List<String> middleParts = new ArrayList<>();
                 for (int i = 2; i<nameParts.length; i++) {
-                    middleParts.add(nameParts[i]);
+                    middleParts.add(nameParts[i].trim());
                 }
                 person.setMiddleNames(middleParts);
             }
         } else {
-            person.setLastName(nameParts[0]);
+            person.setLastName(nameParts[0].trim());
         }
         return person;
     }
@@ -110,7 +110,7 @@ public class AuthorsParserImpl implements AuthorsParser {
         Person person = new PersonImpl();
         String[] nameParts = author.split(" ");
         if (nameParts.length == 1) {
-            person.setLastName(nameParts[0]);
+            person.setLastName(nameParts[0].trim());
             return person;
         }
         
@@ -118,11 +118,11 @@ public class AuthorsParserImpl implements AuthorsParser {
         
         for (int i=0; i<nameParts.length; i++) {
             if (i == 0) {
-                person.setFirstName(nameParts[i]);
+                person.setFirstName(nameParts[i].trim());
             } else if (i == nameParts.length-1) {
-                person.setLastName(nameParts[i]);
+                person.setLastName(nameParts[i].trim());
             } else {
-                person.getMiddleNames().add(nameParts[i]);
+                person.getMiddleNames().add(nameParts[i].trim());
             }
         }
         
