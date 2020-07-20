@@ -71,7 +71,11 @@ public class AuthorsParserImpl implements AuthorsParser {
             if (lastWasSeparator) {
                 lastWasSeparator = false;
             } else {
-                names.add(authorStr.substring(lastSeparatorIdx + 1, currentIdx));
+                if (currentIdx > -1) { 
+                    names.add(authorStr.substring(lastSeparatorIdx + 1, currentIdx));
+                } else {
+                    names.add(authorStr.substring(lastSeparatorIdx + 1));
+                }
                 lastSeparatorIdx = currentIdx;
                 lastWasSeparator = true;
             }
