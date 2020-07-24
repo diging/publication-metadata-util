@@ -62,28 +62,41 @@ public class AuthorsParserImpl implements AuthorsParser {
     }
     
     private void parseCommaSeparatedString(String authorStr, List<Person> authorList) {
-        int startIdx = 0;
-        int lastSeparatorIdx = 0;
-        boolean lastWasSeparator = true;
-        List<String> names = new ArrayList<>();
-        while (authorStr.indexOf(',', startIdx) > -1) {
-            int currentIdx = authorStr.indexOf(',', startIdx);
-            if (lastWasSeparator) {
-                lastWasSeparator = false;
-            } else {
-                if (currentIdx > -1) { 
-                    names.add(authorStr.substring(lastSeparatorIdx + 1, currentIdx));
+        String[] authorStringParts = authorStr.split(",");
+        /*
+         *  we assume that if there is a blank in the first entry (e.g. Albert Einstein)
+         *  that it's just a comma separated list of names not a comma spearated list of 
+         * lastname, first name
+         */
+        if (authorStringParts[0].contains(" ")) {
+            handleIndividualAuthors(authorList, authorStringParts);
+        } else {
+            int startIdx = 0;
+            int lastSeparatorIdx = 0;
+            boolean lastWasSeparator = true;
+            List<String> names = new ArrayList<>();
+            while (authorStr.indexOf(',', startIdx) > -1) {
+                int currentIdx = authorStr.indexOf(',', startIdx);
+                if (lastWasSeparator) {
+                    lastWasSeparator = false;
                 } else {
-                    names.add(authorStr.substring(lastSeparatorIdx + 1));
+                    if (currentIdx > -1) { 
+                        names.add(authorStr.substring(lastSeparatorIdx, currentIdx));
+                    } else {
+                        names.add(authorStr.substring(lastSeparatorIdx));
+                    }
+                    lastSeparatorIdx = currentIdx + 1;
+                    lastWasSeparator = true;
                 }
-                lastSeparatorIdx = currentIdx;
-                lastWasSeparator = true;
+                
+                startIdx = currentIdx + 1;
             }
             
-            startIdx = currentIdx;
+            names.add(authorStr.substring(lastSeparatorIdx));
+            handleIndividualAuthors(authorList, names.toArray(new String[names.size()]));
         }
         
-        handleIndividualAuthors(authorList, names.toArray(new String[names.size()]));
+        
     }
 
     private Person createPersonLastnameFirst(String author) {
@@ -112,7 +125,7 @@ public class AuthorsParserImpl implements AuthorsParser {
     
     private Person createPersonNoComma(String author) {
         Person person = new PersonImpl();
-        String[] nameParts = author.split(" ");
+        String[] nameParts = author.trim().split(" ");
         if (nameParts.length == 1) {
             person.setLastName(nameParts[0].trim());
             return person;
