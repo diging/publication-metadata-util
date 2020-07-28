@@ -16,4 +16,8 @@ public interface Person {
 
     String getLastName();
 
+    void setAffiliation(String affiliation);
+
+    String getAffiliation();
+
 }

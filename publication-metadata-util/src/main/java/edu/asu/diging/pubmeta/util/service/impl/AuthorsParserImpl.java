@@ -2,6 +2,8 @@ package edu.asu.diging.pubmeta.util.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import edu.asu.diging.pubmeta.util.model.Person;
 import edu.asu.diging.pubmeta.util.model.impl.PersonImpl;
@@ -52,14 +54,27 @@ public class AuthorsParserImpl implements AuthorsParser {
     private void handleIndividualAuthors(List<Person> authorList, String[] authors) {
         for (String author : authors) {
             if (!author.trim().isEmpty()) {
-                if (author.contains(",")) {
-                    authorList.add(createPersonLastnameFirst(author));
-                } else {
-                    authorList.add(createPersonNoComma(author));
+                Pattern pattern = Pattern.compile("(.+?)(\\(.*\\))");
+                Matcher match = pattern.matcher(author);
+                String affiliation = "";
+                if(match.matches()) {
+                    author = match.group(1);
+                    affiliation = match.group(2);
+                    affiliation = affiliation.substring(1, affiliation.length()-1);
                 }
+                
+                Person person = null;
+                if (author.contains(",")) {
+                   person = createPersonLastnameFirst(author);
+                } else {
+                    person = createPersonNoComma(author);
+                }
+                person.setAffiliation(affiliation);
+                authorList.add(person);
             }
         }
     }
+    
     
     private void parseCommaSeparatedString(String authorStr, List<Person> authorList) {
         String[] authorStringParts = authorStr.split(",");
@@ -104,18 +119,29 @@ public class AuthorsParserImpl implements AuthorsParser {
         String[] nameParts = author.split(", ");
         if (nameParts.length > 1) {
             person.setLastName(nameParts[0].trim());
-            person.setFirstName(nameParts[1].trim());
+            String firstNamesStr = nameParts[1].trim();
+            
+            String[] firstNames = firstNamesStr.split(" ");
+            person.setFirstName(firstNames[0].trim());
+            
+            List<String> middleParts = new ArrayList<>();
+            person.setMiddleNames(middleParts);
+            
+            if (firstNames.length > 1) {
+                for (int i = 1; i<firstNames.length; i++) {
+                    person.getMiddleNames().add(firstNames[i].trim());
+                }
+            }
             /*
              * The following really doesn't seem to make sense as it would
              * mean the name would be something like Bauer, Peter, Franz but
              * who knows. Let's make those middle names for now.
              */
             if (nameParts.length > 2) {
-                List<String> middleParts = new ArrayList<>();
                 for (int i = 2; i<nameParts.length; i++) {
-                    middleParts.add(nameParts[i].trim());
+                    person.getMiddleNames().add(nameParts[i].trim());
                 }
-                person.setMiddleNames(middleParts);
+                
             }
         } else {
             person.setLastName(nameParts[0].trim());

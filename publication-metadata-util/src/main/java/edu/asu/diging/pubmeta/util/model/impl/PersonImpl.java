@@ -9,6 +9,7 @@ public class PersonImpl implements Person {
     private String lastName;
     private String firstName;
     private List<String> middleNames;
+    private String affiliation;
     
     @Override
     public String getLastName() {
@@ -33,6 +34,14 @@ public class PersonImpl implements Person {
     @Override
     public void setMiddleNames(List<String> middleNames) {
         this.middleNames = middleNames;
+    }
+    @Override
+    public String getAffiliation() {
+        return affiliation;
+    }
+    @Override
+    public void setAffiliation(String affiliation) {
+        this.affiliation = affiliation;
     }
 
 }
