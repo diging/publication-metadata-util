@@ -46,73 +46,39 @@ public class DimensionsMapperImpl implements DimensionsMapper {
     @Override
     public void map(DimensionsMetadataEntry entry, Publication pub) {
         
-        pub.setId(entry.getPublicationId());
+        pub.setId(entry.getPublicationId() != null ? entry.getPublicationId().trim() : "");
+        pub.setPmcid(entry.getPmcid() != null ? entry.getPmcid().trim() : "");
+        pub.setPubmedId(entry.getPmid() != null ? entry.getPmid().trim() : "");
         
         addExtraData(entry, pub);
         
-        if (pub.getUrl() == null || pub.getUrl().trim().isEmpty()) {
-            pub.setUrl(entry.getDimensionsUrl());
-        }
-        if (pub.getDoi() == null || pub.getDoi().trim().isEmpty()) {
-            pub.setDoi(entry.getDoi() != null ? entry.getDoi().trim() : null);
-        }
-        
-        if (pub.getCategories() == null) {
-            pub.setCategories(new ArrayList<>());
-        }
+        pub.setTitle(entry.getTitle() != null ? entry.getTitle().trim() : "");
+        pub.setDoi(entry.getDoi() != null ? entry.getDoi().trim() : null);
+        pub.setJournal(entry.getSourceTitle() != null ? entry.getSourceTitle().trim() : "");
         
         addCategories(entry, pub);
         
-        if (pub.getFunder() == null || pub.getFunder().trim().isEmpty()) {
-            pub.setFunder(entry.getFunder() != null ? entry.getFunder().trim() : "");
-        }
-        
+        pub.setFunder(entry.getFunder() != null ? entry.getFunder().trim() : "");
         addMeshTerms(entry, pub);
         
-        if (pub.getPublishTime() != null) {
-            pub.setPublishTime(entry.getPublicationDate() != null ? entry.getPublicationDate().trim() : "");
-        }
+        pub.setPublishTime(entry.getPublicationDate() != null ? entry.getPublicationDate().trim() : "");
         
         setPublishYear(entry, pub);
         
-        if (pub.getVolume() == null || pub.getVolume().trim().isEmpty()) {
-            pub.setVolume(entry.getVolume() != null ? entry.getVolume().trim() : "");
-        }
-        
-        if (pub.getIssue() == null || pub.getIssue().trim().isEmpty()) {
-            pub.setIssue(entry.getIssue() != null ? entry.getIssue().trim() : "");
-        }
-        
-        if (pub.getPages() == null || pub.getPages().trim().isEmpty()) {
-            pub.setPages(entry.getPagingation() != null ? entry.getPagingation().trim() : "");
-        }
-        
-        if (pub.getPublicationType() == null && entry.getPublicationType() != null) {
-            pub.setPublicationType(typeMap.get(entry.getPublicationType().trim()));
-        }
-        
+        pub.setVolume(entry.getVolume() != null ? entry.getVolume().trim() : "");
+        pub.setIssue(entry.getIssue() != null ? entry.getIssue().trim() : "");
+        pub.setPages(entry.getPagination() != null ? entry.getPagination().trim() : "");
+        pub.setPublicationType(typeMap.get(entry.getPublicationType().trim()));
         setAuthors(entry, pub);
         setResearchCountries(entry, pub);
-        
-        if (pub.getFunder() == null || pub.getFunder().trim().isEmpty()) {
-            pub.setFunder(entry.getFunder());
-        }
-        
-        if (pub.getTimesCited() <= 0) {
-            pub.setTimesCited(new Integer(entry.getTimesCites()));
-        }
-        
-        if (pub.getRecentCitations() <= 0) {
-            pub.setRecentCitations(new Integer(entry.getRecentCitations()));
-        }
-        
-        if (pub.getUrl() != null || pub.getUrl().trim().isEmpty()) {
-            pub.setUrl(entry.getSourceLinkout());
-        }
+        pub.setFunder(entry.getFunder() != null ? entry.getFunder().trim() : "");
+        pub.setTimesCited(new Integer(entry.getTimesCites()));
+        pub.setRecentCitations(new Integer(entry.getRecentCitations()));
+        pub.setUrl(entry.getSourceLinkout() != null ? entry.getSourceLinkout().trim() : "");
     }
 
     private void setPublishYear(DimensionsMetadataEntry entry, Publication pub) {
-        if (pub.getPublishYear() <= 0 && entry.getPubYear() != null && !entry.getPubYear().trim().isEmpty()) {
+        if (entry.getPubYear() != null && !entry.getPubYear().trim().isEmpty()) {
             try {
                 pub.setPublishYear(new Integer(entry.getPubYear()));
             } catch(NumberFormatException ex) {
@@ -130,13 +96,19 @@ public class DimensionsMapperImpl implements DimensionsMapper {
             if (entry.getMeshTerms() != null) {
                 String[] terms = entry.getMeshTerms().split(";");
                 for (String term : terms) {
-                    pub.getMeshTerms().add(term.trim());
+                    if (!term.trim().isEmpty()) {
+                        pub.getMeshTerms().add(term.trim());
+                    }
                 }
             }
         }
     }
 
     private void addCategories(DimensionsMetadataEntry entry, Publication pub) {
+        if (pub.getCategories() == null) {
+            pub.setCategories(new ArrayList<>());
+        }
+        
         String categorieStr = entry.getForCategories();
         if (categorieStr != null && !categorieStr.trim().isEmpty()) {
             List<String> existingCategories = pub.getCategories().stream().map(c -> c.getTerm().trim()).collect(Collectors.toList());
@@ -151,22 +123,23 @@ public class DimensionsMapperImpl implements DimensionsMapper {
             pub.setExtraData(new HashMap<String, Object>());
         }
         
-        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_ALTMETRIC, entry.getAltmetric());
-        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_ANTHOLOGY_TITLE, entry.getAnthologyTitle());
-        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_CORRESPONDING_AUTHOR, entry.getCorrespondAuthor());
-        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_FCR, entry.getFcr());
-        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_RCR, entry.getRcr());
-        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_OPEN_ACCESS, entry.getOpenAccess());
-        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_STANDARDIZED_ORGANIZATIONS, entry.getStandardizedOrganizations());
-        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_GRID_IDS, entry.getGridIds());
-        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_LINK, entry.getDimensionsUrl());
-        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_DEVELOPMENT_GOALS, entry.getSustainableDevGoals());
+        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_RANK, entry.getRank() != null ? entry.getRank().trim() : "");
+        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_ALTMETRIC, entry.getAltmetric() != null ? entry.getAltmetric().trim() : "");
+        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_ANTHOLOGY_TITLE, entry.getAnthologyTitle() != null ? entry.getAnthologyTitle().trim() : "");
+        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_CORRESPONDING_AUTHOR, entry.getCorrespondAuthor() != null ? entry.getCorrespondAuthor().trim() : "");
+        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_FCR, entry.getFcr() != null ? entry.getFcr().trim() : "");
+        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_RCR, entry.getRcr() != null ? entry.getRcr().trim() : "");
+        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_OPEN_ACCESS, entry.getOpenAccess() != null ? entry.getOpenAccess().trim() : "");
+        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_STANDARDIZED_ORGANIZATIONS, entry.getStandardizedOrganizations() != null ? entry.getStandardizedOrganizations().trim() : "");
+        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_GRID_IDS, entry.getGridIds() != null ? entry.getGridIds().trim() : "");
+        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_LINK, entry.getDimensionsUrl() != null ? entry.getDimensionsUrl().trim() : "");
+        pub.getExtraData().put(PublicationExtraData.DIMENSIONS_DEVELOPMENT_GOALS, entry.getSustainableDevGoals() != null ? entry.getSustainableDevGoals().trim() : "");
     }
 
     private void setAuthors(DimensionsMetadataEntry entry, Publication pub) {
         if (pub.getAuthors() == null || pub.getAuthors().isEmpty()) {
             if (entry.getAuthors() != null && !entry.getAuthors().trim().isEmpty()) {
-                pub.setAuthors(authorParser.parseAuthorString(entry.getAuthors().trim()));                
+                pub.setAuthors(authorParser.parseAuthorString(entry.getAuthorAffiliations().trim()));                
             }
         }
     }
@@ -179,7 +152,7 @@ public class DimensionsMapperImpl implements DimensionsMapper {
             String[] countryList = countries.trim().split(";");
             for (String country : countryList) {
                 if (!country.trim().isEmpty()) {
-                    ((List<String>)pub.getExtraData().get(PublicationExtraData.DIMENSIONS_AFFILIATION_COUNTRIES)).add(country);
+                    ((List<String>)pub.getExtraData().get(PublicationExtraData.DIMENSIONS_AFFILIATION_COUNTRIES)).add(country.trim());
                 }
             }
         }

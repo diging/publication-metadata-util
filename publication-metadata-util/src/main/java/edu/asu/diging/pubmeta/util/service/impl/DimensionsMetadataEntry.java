@@ -3,6 +3,8 @@ package edu.asu.diging.pubmeta.util.service.impl;
 import com.opencsv.bean.CsvBindByName;
 
 public class DimensionsMetadataEntry {
+    @CsvBindByName(column = "Rank")
+    private String rank;
     @CsvBindByName(column = "Publication ID")
     private String publicationId;
     @CsvBindByName(column = "DOI")
@@ -28,7 +30,7 @@ public class DimensionsMetadataEntry {
     @CsvBindByName(column = "Issue")
     private String issue;
     @CsvBindByName(column = "Pagination")
-    private String pagingation;
+    private String pagination;
     @CsvBindByName(column = "Open Access")
     private String openAccess;
     @CsvBindByName(column = "Publication Type")
@@ -66,6 +68,14 @@ public class DimensionsMetadataEntry {
     @CsvBindByName(column = "Sustainable Development Goals")
     private String sustainableDevGoals;
     
+    public String getRank() {
+        return rank;
+    }
+
+    public void setRank(String rank) {
+        this.rank = rank;
+    }
+
     public DimensionsMetadataEntry() {
     }
 
@@ -165,12 +175,12 @@ public class DimensionsMetadataEntry {
         this.issue = issue;
     }
 
-    public String getPagingation() {
-        return pagingation;
+    public String getPagination() {
+        return pagination;
     }
 
-    public void setPagingation(String pagingation) {
-        this.pagingation = pagingation;
+    public void setPagination(String pagingation) {
+        this.pagination = pagingation;
     }
 
     public String getOpenAccess() {

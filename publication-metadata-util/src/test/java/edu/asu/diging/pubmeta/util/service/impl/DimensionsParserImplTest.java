@@ -7,9 +7,6 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import edu.asu.diging.pubmeta.util.model.Publication;
-import edu.asu.diging.pubmeta.util.model.PublicationExtraData;
-
 public class DimensionsParserImplTest {
     
     private DimensionsParserImpl parserToTest;
