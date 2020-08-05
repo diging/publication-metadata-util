@@ -1,7 +1,5 @@
 package edu.asu.diging.pubmeta.util.service.impl;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,7 +14,6 @@ import org.junit.Test;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
-import edu.asu.diging.pubmeta.util.model.Person;
 import edu.asu.diging.pubmeta.util.model.Publication;
 import edu.asu.diging.pubmeta.util.model.PublicationExtraData;
 import edu.asu.diging.pubmeta.util.model.PublicationType;
