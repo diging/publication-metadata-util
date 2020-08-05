@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>edu.asu.diging</groupId>
 	<artifactId>publication-metadata-util</artifactId>
-	<version>0.7-SNAPSHOT</version>
+	<version>0.7</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>
@@ -31,7 +31,7 @@
 		<developerConnection>scm:git:ssh://github.com/diging/publication-metadata-util.git</developerConnection>
 		<url>https://github.com/diging/publication-metadata-util</url>
 	</scm>
-	
+
 	<properties>
 		<org.slf4j-version>1.7.26</org.slf4j-version>
 	</properties>
@@ -43,7 +43,7 @@
 			<version>4.13</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -86,7 +86,7 @@
 			</exclusions>
 			<scope>runtime</scope>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
 		<dependency>
 			<groupId>com.opencsv</groupId>
@@ -132,13 +132,13 @@
 
 	<build>
 		<resources>
-	      <resource>
-	        <directory>src/test/java</directory>
-	        <includes>
-	          <include>**/*.csv</include>
-	        </includes>
-	      </resource>
-	    </resources>
+			<resource>
+				<directory>src/test/java</directory>
+				<includes>
+					<include>**/*.csv</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

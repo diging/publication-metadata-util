@@ -68,12 +68,12 @@ public class DimensionsMapperImpl implements DimensionsMapper {
         pub.setVolume(entry.getVolume() != null ? entry.getVolume().trim() : "");
         pub.setIssue(entry.getIssue() != null ? entry.getIssue().trim() : "");
         pub.setPages(entry.getPagination() != null ? entry.getPagination().trim() : "");
-        pub.setPublicationType(typeMap.get(entry.getPublicationType().trim()));
+        pub.setPublicationType(typeMap.get(entry.getPublicationType() != null ? entry.getPublicationType().trim() : ""));
         setAuthors(entry, pub);
         setResearchCountries(entry, pub);
         pub.setFunder(entry.getFunder() != null ? entry.getFunder().trim() : "");
-        pub.setTimesCited(new Integer(entry.getTimesCites()));
-        pub.setRecentCitations(new Integer(entry.getRecentCitations()));
+        pub.setTimesCited(entry.getTimesCites() != null ? new Integer(entry.getTimesCites()) : 0);
+        pub.setRecentCitations(entry.getRecentCitations() != null ? new Integer(entry.getRecentCitations()) : 0);
         pub.setUrl(entry.getSourceLinkout() != null ? entry.getSourceLinkout().trim() : "");
     }
 
